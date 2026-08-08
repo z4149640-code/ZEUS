@@ -91,8 +91,9 @@ export default function AnimatedBackground() {
 
   useEffect(() => {
     setMounted(true);
-    // Render fewer particles on mobile for performance (70 vs 280)
-    setParticleCount(window.innerWidth < 768 ? 70 : 280);
+    // On mobile (<768px), disable JS particles entirely to fix freezing.
+    // The background gradients and speed lines are enough for a premium feel.
+    setParticleCount(window.innerWidth < 768 ? 0 : 280);
   }, []);
 
   return (
@@ -115,9 +116,9 @@ export default function AnimatedBackground() {
           style={{
             left: c.x, top: c.y, width: c.w, height: c.h,
             background:
-              "radial-gradient(ellipse at center, rgba(80,60,120,1) 0%, rgba(20,10,40,0.4) 50%, transparent 75%)",
+              "radial-gradient(ellipse at center, rgba(80,60,120,0.6) 0%, rgba(20,10,40,0.2) 40%, transparent 70%)",
             opacity: c.opacity,
-            filter: "blur(60px)",
+            // Removed filter: blur(60px) which tanks mobile GPU
           }}
           animate={{
             scale:   [1, 1.12, 0.95, 1],

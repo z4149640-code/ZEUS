@@ -41,7 +41,7 @@ export default function ProductModal({ product, onClose }: Props) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={handleClose}
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/95 p-4"
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
