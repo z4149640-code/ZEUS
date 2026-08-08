@@ -7,10 +7,13 @@ const cairo = Cairo({ subsets: ['arabic', 'latin'], variable: '--font-cairo', di
 export const metadata: Metadata = {
   title: 'زيوس — ملابس الشارع الفاخرة',
   description: 'زيوس. ملابس شارع فاخرة مصممة لأولئك الذين يتحركون بهدف.',
- openGraph: {
+  openGraph: {
     images: [
       {
-        url: 'https://bolt.new/static/og_default.png',
+        url: '/images/WhatsApp_Image_2026-07-18_at_3.42.36_AM-removebg-preview.png',
+        width: 1200,
+        height: 630,
+        alt: 'ZEUS',
       },
     ],
   },
@@ -18,7 +21,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     images: [
       {
-        url: 'https://bolt.new/static/og_default.png',
+        url: '/images/WhatsApp_Image_2026-07-18_at_3.42.36_AM-removebg-preview.png',
+        alt: 'ZEUS',
       },
     ],
   },
