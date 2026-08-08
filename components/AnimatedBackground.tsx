@@ -87,7 +87,13 @@ const BOLTS     = buildBolts();
 export default function AnimatedBackground() {
   // Only render animated particles on the client to avoid hydration issues
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  const [particleCount, setParticleCount] = useState(0);
+
+  useEffect(() => {
+    setMounted(true);
+    // Render fewer particles on mobile for performance (70 vs 280)
+    setParticleCount(window.innerWidth < 768 ? 70 : 280);
+  }, []);
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden bg-[#000000] pointer-events-none select-none">
@@ -124,7 +130,7 @@ export default function AnimatedBackground() {
       {/* ── Particles & Bolts — client-only (suppresses SSR mismatch) ─────── */}
       {mounted && (
         <>
-          {PARTICLES.map((p) => (
+          {PARTICLES.slice(0, particleCount).map((p) => (
             <motion.div
               key={p.id}
               className="absolute rounded-full bg-white"
