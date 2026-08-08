@@ -12,80 +12,74 @@ export type Product = {
 
 export const products: Product[] = [
   {
-    id: "zeus-black-hoodie",
-    name: "هودي زيوس الأسود",
-    price: 1299,
-    category: "هودي",
+    id: "zeus-black-tee-grillz",
+    name: "تيشيرت The Next — أسود",
+    price: 799,
+    category: "تيشيرت",
     badge: "الأكثر مبيعاً",
-    image:
-      "https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "/1ffb6811-5b98-419d-bb9e-01decb9d4b4b-Photoroom.webp",
     images: [
-      "https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/2294342/pexels-photo-2294342.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "/1ffb6811-5b98-419d-bb9e-01decb9d4b4b-Photoroom.webp",
+      "/258752b5-7038-4c1e-9872-7302f7924cae-Photoroom.webp",
     ],
     description:
-      "هودي ثقيل الوزن 400GSM. قبعة مبطنة مزدوجة، جيب كانغرو، وأساور مضلعة. شعار ذئب زيوس مطرز على الصدر. مغسول في ظلام تام.",
+      "تيشيرت أوفرسايز ثقيل الوزن 280GSM. طباعة Grillz معدنية فاخرة على الصدر. قماش قطن 100% — لأولئك الذين يتحركون بهدف.",
     sizes: ["S", "M", "L", "XL", "XXL"],
   },
   {
-    id: "zeus-oversized-tee",
-    name: "تيشيرت زيوس أوفرسايز",
-    price: 699,
+    id: "zeus-white-tee-grillz",
+    name: "تيشيرت The Next — أبيض",
+    price: 799,
     category: "تيشيرت",
     badge: "جديد",
-    image:
-      "https://images.pexels.com/photos/2897531/pexels-photo-2897531.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "/258752b5-7038-4c1e-9872-7302f7924cae-Photoroom.webp",
     images: [
-      "https://images.pexels.com/photos/2897531/pexels-photo-2897531.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "/258752b5-7038-4c1e-9872-7302f7924cae-Photoroom.webp",
+      "/1ffb6811-5b98-419d-bb9e-01decb9d4b4b-Photoroom.webp",
     ],
     description:
-      "تيشيرت بوزن 240GSM. أكتاف منسدلة، وحاشية مطولة. رسمة برق زيوس مطبوعة على الظهر. مصمم لأولئك الذين يتحركون بهدف.",
+      "تيشيرت أوفرسايز أبيض 280GSM. نفس طباعة Grillz المعدنية على خلفية ناصعة البياض. قطعة تلفت الأنظار في كل مكان.",
     sizes: ["S", "M", "L", "XL", "XXL"],
   },
   {
-    id: "zeus-tactical-cargo",
-    name: "بنطلون كارغو تكتيكي",
-    price: 1799,
-    category: "بناطيل",
-    image:
-      "https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=800",
-    images: [
-      "https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/3622608/pexels-photo-3622608.jpeg?auto=compress&cs=tinysrgb&w=800",
-    ],
-    description:
-      "بنطلون كارغو تكتيكي بـ 6 جيوب. ركبتين مقواتين، وأساور كاحل قابلة للتعديل. قماش قنب مقاوم للتمزق. صُنع للشوارع، صُنع للوحش.",
-    sizes: ["S", "M", "L", "XL", "XXL"],
-  },
-  {
-    id: "zeus-shadow-jacket",
-    name: "جاكيت زيوس الشبح",
-    price: 2499,
-    category: "جواكت",
+    id: "zeus-black-camo-tee",
+    name: "God's Art On Display — أسود",
+    price: 899,
+    category: "تيشيرت",
     badge: "إصدار محدود",
-    image:
-      "https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "/89b94f55-405c-4874-af29-57e49807b237-Photoroom.webp",
     images: [
-      "https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "https://images.pexels.com/photos/2220316/pexels-photo-2220316.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "/89b94f55-405c-4874-af29-57e49807b237-Photoroom.webp",
+      "/30a7dfa9-9790-44e7-8dea-01eaff7f8440-Photoroom.webp",
     ],
     description:
-      "جاكيت رياضي مع علامة زيوس العاكسة. هيكل مقاوم للماء، بطانة شبكية. جيوب بسحاب. إصدار محدود — بمجرد نفادها، تنتهي.",
+      "تيشيرت أوفرسايز كروب بطباعة Camo ضخمة. نص بولد — God's Art On Display. قماش 300GSM ثقيل فاخر.",
     sizes: ["S", "M", "L", "XL", "XXL"],
   },
   {
-    id: "zeus-wolf-snapback",
-    name: "كاب زيوس الذئب",
-    price: 499,
-    category: "كابات",
-    image:
-      "https://images.pexels.com/photos/1124465/pexels-photo-1124465.jpeg?auto=compress&cs=tinysrgb&w=800",
+    id: "zeus-white-camo-tee",
+    name: "God's Art On Display — أبيض",
+    price: 899,
+    category: "تيشيرت",
+    image: "/30a7dfa9-9790-44e7-8dea-01eaff7f8440-Photoroom.webp",
     images: [
-      "https://images.pexels.com/photos/1124465/pexels-photo-1124465.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "/30a7dfa9-9790-44e7-8dea-01eaff7f8440-Photoroom.webp",
+      "/89b94f55-405c-4874-af29-57e49807b237-Photoroom.webp",
     ],
     description:
-      "كاب سناب باك بـ 6 ألواح. شعار رأس الذئب مطرز بتقنية 3D. حافة مسطحة مع شريط داخلي. مقاس واحد يناسب الجميع — ذئب واحد يناسب الجميع.",
-    sizes: ["ONE SIZE"],
+      "النسخة البيضاء من God's Art On Display. Camo رمادي على خلفية بيضاء — تناقض قوي وجريء.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+  },
+  {
+    id: "zeus-script-shorts",
+    name: "شورت The Next Generation",
+    price: 699,
+    category: "شورت",
+    badge: "جديد",
+    image: "/IMG-1411.webp",
+    images: ["/IMG-1411.webp"],
+    description:
+      "شورت أسود بطباعة خط سكريبت فاخر — The Next Generation. خامة فليس ناعمة 320GSM مع حزام وبيه شريط أبيض. راحة وأناقة بدون تنازلات.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
   },
 ];

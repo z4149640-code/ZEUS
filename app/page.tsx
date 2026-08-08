@@ -9,7 +9,7 @@ import AnimatedBackground from "@/components/AnimatedBackground";
 import ProductCard from "@/components/ProductCard";
 import ProductModal from "@/components/ProductModal";
 import CartDrawer from "@/components/CartDrawer";
-import Marquee from "@/components/Marquee";
+import LoadingScreen from "@/components/LoadingScreen";
 import Cursor from "@/components/Cursor";
 import { products, type Product } from "@/lib/mockData";
 
@@ -20,6 +20,7 @@ export default function Home() {
 
   return (
     <>
+      <LoadingScreen />
       <Cursor />
       <AnimatedBackground />
       <Navbar />
@@ -38,9 +39,9 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, scale: 0.88 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+          transition={{ duration: 1.1, delay: 0.2, ease: "easeOut" }}
           whileHover={{ scale: 1.04 }}
-          className="relative mx-auto w-[82vw] max-w-[560px] sm:max-w-[620px] md:max-w-[680px]"
+          className="relative mx-auto w-[82vw] max-w-[560px] sm:max-w-[640px] md:max-w-[720px]"
           style={{ aspectRatio: "820/360" }}
         >
           <Image
@@ -48,16 +49,16 @@ export default function Home() {
             alt="ZEUS — Premium Streetwear"
             fill
             priority
-            className="object-contain drop-shadow-[0_0_40px_rgba(255,255,255,0.12)]"
-            sizes="(max-width: 640px) 82vw, (max-width: 768px) 620px, 680px"
+            className="object-contain drop-shadow-[0_0_65px_rgba(255,255,255,0.22)]"
+            sizes="(max-width: 640px) 82vw, (max-width: 768px) 640px, 720px"
           />
         </motion.div>
 
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-12 max-w-md font-body text-sm leading-relaxed text-white/60 sm:text-base"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.75 }}
+          className="mt-16 max-w-md font-body text-sm leading-relaxed text-white/55 sm:mt-20 sm:text-base"
         >
           مصممة لأولئك الذين يتحركون بهدف. خامات ثقيلة، قصّات وحشية، وبدون أي تنازلات.
         </motion.p>
@@ -65,20 +66,20 @@ export default function Home() {
           href="#catalog"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-8 inline-flex items-center gap-2 border border-white/30 px-8 py-3 font-display text-xs font-semibold uppercase tracking-[0.25em] text-white transition-colors hover:bg-white hover:text-black"
+          transition={{ duration: 0.6, delay: 0.95 }}
+          className="mt-10 inline-flex items-center gap-2 border border-white/30 px-8 py-3 font-display text-xs font-semibold uppercase tracking-[0.25em] text-white transition-all duration-300 hover:bg-white hover:text-black hover:shadow-[0_0_30px_rgba(255,255,255,0.25)]"
         >
           تسوق التشكيلة
           <ArrowDown size={14} />
         </motion.a>
       </section>
 
-      <Marquee />
+
 
       {/* Catalog */}
       <section
         id="catalog"
-        className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"
+        className="relative w-full px-10 py-20 sm:px-16 lg:px-28 xl:px-40"
       >
         <div className="mb-12 flex flex-col gap-2">
           <motion.span
@@ -100,7 +101,7 @@ export default function Home() {
           </motion.h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-x-4 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((p, i) => (
             <ProductCard
               key={p.id}

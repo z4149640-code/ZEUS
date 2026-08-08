@@ -68,25 +68,36 @@ const config: Config = {
       },
       keyframes: {
         'accordion-down': {
-          from: {
-            height: '0',
-          },
-          to: {
-            height: 'var(--radix-accordion-content-height)',
-          },
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
         },
         'accordion-up': {
-          from: {
-            height: 'var(--radix-accordion-content-height)',
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
+        },
+        'glow-pulse': {
+          '0%, 100%': {
+            filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.18)) drop-shadow(0 0 50px rgba(255,255,255,0.06))',
           },
-          to: {
-            height: '0',
+          '50%': {
+            filter: 'drop-shadow(0 0 36px rgba(255,255,255,0.38)) drop-shadow(0 0 80px rgba(255,255,255,0.14))',
           },
+        },
+        'shimmer': {
+          '0%': { backgroundPosition: '-200% center' },
+          '100%': { backgroundPosition: '200% center' },
+        },
+        'marquee': {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' },
         },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'glow-pulse': 'glow-pulse 3.5s ease-in-out infinite',
+        'shimmer': 'shimmer 2.5s linear infinite',
+        'marquee': 'marquee 22s linear infinite',
       },
     },
   },

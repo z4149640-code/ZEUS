@@ -68,3 +68,43 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #404040;
 }
+
+/* ── ZEUS Design System Animations ─────────────────────────────── */
+
+/* White breathing glow for product card images */
+@keyframes glow-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.18))
+            drop-shadow(0 0 55px rgba(255, 255, 255, 0.06));
+  }
+  50% {
+    filter: drop-shadow(0 0 38px rgba(255, 255, 255, 0.40))
+            drop-shadow(0 0 85px rgba(255, 255, 255, 0.15));
+  }
+}
+
+/* Horizontal shimmer sweep — used on logo and CTAs */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* Utility classes */
+.animate-glow-pulse {
+  animation: glow-pulse 3.5s ease-in-out infinite;
+}
+
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.5) 0%,
+    rgba(255,255,255,1)   40%,
+    rgba(255,255,255,0.5) 60%,
+    rgba(255,255,255,0.2) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}

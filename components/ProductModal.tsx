@@ -60,11 +60,11 @@ export default function ProductModal({ product, onClose }: Props) {
             </button>
 
             {/* Image */}
-            <div className="relative aspect-[3/4] w-full bg-white/5 md:aspect-auto">
+            <div className="relative aspect-[3/4] w-full bg-transparent md:aspect-auto" style={{ background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 50%, transparent 80%)' }}>
               <img
                 src={product.image}
                 alt={product.name}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
               />
             </div>
 

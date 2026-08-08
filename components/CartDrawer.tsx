@@ -94,11 +94,11 @@ export default function CartDrawer() {
                         exit={{ opacity: 0, x: 40 }}
                         className="flex gap-3"
                       >
-                        <div className="h-24 w-20 flex-shrink-0 overflow-hidden bg-white/5">
+                        <div className="h-24 w-20 flex-shrink-0 overflow-hidden bg-transparent" style={{ background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 80%)' }}>
                           <img
                             src={i.product.image}
                             alt={i.product.name}
-                            className="h-full w-full object-cover"
+                            className="h-full w-full object-contain"
                           />
                         </div>
                         <div className="flex flex-1 flex-col justify-between">
