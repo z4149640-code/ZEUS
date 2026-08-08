@@ -1,24 +1,24 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import type { Product } from "@/lib/mockData";
 
 type Props = {
   product: Product;
-  onOpen: (p: Product) => void;
   index?: number;
 };
 
-export default function ProductCard({ product, onOpen, index = 0 }: Props) {
+export default function ProductCard({ product, index = 0 }: Props) {
   return (
-    <motion.button
-      onClick={() => onOpen(product)}
-      initial={{ opacity: 0, y: 30 }}
+    <Link href={`/product/${product.id}`} className="group relative flex flex-col text-left">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: (index % 4) * 0.08 }}
-      className="group relative flex flex-col text-left"
-    >
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.5, delay: (index % 4) * 0.08 }}
+        className="w-full"
+      >
       {/* ── Outer glow halo (matches reference: large white bloom behind product) ── */}
       <div className="relative w-full" style={{ aspectRatio: "1 / 1" }}>
 
@@ -90,6 +90,7 @@ export default function ProductCard({ product, onOpen, index = 0 }: Props) {
           {product.price.toLocaleString()} ج.م
         </span>
       </div>
-    </motion.button>
+      </motion.div>
+    </Link>
   );
 }

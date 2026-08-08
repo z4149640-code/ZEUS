@@ -4,32 +4,14 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowDown, Instagram, Mail } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import AnimatedBackground from "@/components/AnimatedBackground";
 import ProductCard from "@/components/ProductCard";
-import ProductModal from "@/components/ProductModal";
-import CartDrawer from "@/components/CartDrawer";
-import LoadingScreen from "@/components/LoadingScreen";
-import Cursor from "@/components/Cursor";
 import { products, type Product } from "@/lib/mockData";
 
 const LOGO = "/images/WhatsApp_Image_2026-07-18_at_3.42.36_AM-removebg-preview.png";
 
 export default function Home() {
-  const [activeProduct, setActiveProduct] = useState<Product | null>(null);
-
   return (
     <>
-      <LoadingScreen />
-      <Cursor />
-      <AnimatedBackground />
-      <Navbar />
-      <CartDrawer />
-      <ProductModal
-        product={activeProduct}
-        onClose={() => setActiveProduct(null)}
-      />
-
       {/* Hero */}
       <section
         id="home"
@@ -107,7 +89,6 @@ export default function Home() {
               key={p.id}
               product={p}
               index={i}
-              onOpen={setActiveProduct}
             />
           ))}
         </div>

@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Cairo } from 'next/font/google';
+import GlobalUI from '@/components/GlobalUI';
 
 const cairo = Cairo({ subsets: ['arabic', 'latin'], variable: '--font-cairo', display: 'swap' });
 
@@ -35,7 +36,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl" className={`${cairo.variable} ${cairo.variable}`}>
-      <body className="bg-black font-cairo text-white antialiased">{children}</body>
+      <body className="bg-black font-cairo text-white antialiased">
+        <GlobalUI />
+        {children}
+      </body>
     </html>
   );
 }
