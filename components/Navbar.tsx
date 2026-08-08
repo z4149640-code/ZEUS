@@ -7,9 +7,9 @@ import { ShoppingBag, Menu, X } from "lucide-react";
 import { useCartStore } from "@/lib/store";
 
 const links = [
-  { label: "الرئيسية", href: "#home" },
-  { label: "المنتجات", href: "#catalog" },
-  { label: "تواصل معنا", href: "#contact" },
+  { label: "الرئيسية", href: "/#home" },
+  { label: "المنتجات", href: "/#catalog" },
+  { label: "تواصل معنا", href: "/#contact" },
 ];
 
 export default function Navbar() {
@@ -63,7 +63,7 @@ export default function Navbar() {
 
           {/* Center: logo */}
           <Link
-            href="#home"
+            href="/"
             className="flex flex-1 items-center justify-center"
           >
             <span className="font-display text-sm font-medium uppercase tracking-[0.3em] text-white/60 transition-colors hover:text-white">
