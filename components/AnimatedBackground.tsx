@@ -91,9 +91,9 @@ export default function AnimatedBackground() {
 
   useEffect(() => {
     setMounted(true);
-    // On mobile (<768px), disable JS particles entirely to fix freezing.
-    // The background gradients and speed lines are enough for a premium feel.
-    setParticleCount(window.innerWidth < 768 ? 0 : 280);
+    // Render 100 particles on mobile (performant since we removed the heavy blur filters)
+    // and 280 on desktop.
+    setParticleCount(window.innerWidth < 768 ? 100 : 280);
   }, []);
 
   return (
