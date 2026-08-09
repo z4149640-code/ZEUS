@@ -57,7 +57,8 @@ export default function AdminDashboardClient() {
     try {
       const finalVariants: ProductVariant[] = [];
 
-      for (const [index, variant] of formData.variants.entries()) {
+      for (let index = 0; index < formData.variants.length; index++) {
+        const variant = formData.variants[index];
         let imageUrl = variant.imageUrl || "";
         
         // imageFile is a FileList, we take the first file if a new one was uploaded
