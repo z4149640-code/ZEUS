@@ -84,14 +84,18 @@ export default function AdminProductForm({ onSubmit, isSubmitting, initialData, 
 
   const sizes = watch("sizes") || [];
 
+  const addSize = () => {
+    const newSize = sizeInput.trim().toUpperCase();
+    if (newSize && !sizes.includes(newSize)) {
+      setValue("sizes", [...sizes, newSize], { shouldValidate: true });
+    }
+    setSizeInput("");
+  };
+
   const handleAddSize = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      const newSize = sizeInput.trim().toUpperCase();
-      if (newSize && !sizes.includes(newSize)) {
-        setValue("sizes", [...sizes, newSize], { shouldValidate: true });
-      }
-      setSizeInput("");
+      addSize();
     }
   };
 
@@ -176,28 +180,37 @@ export default function AdminProductForm({ onSubmit, isSubmitting, initialData, 
               </span>
             ))}
           </div>
-          <input
-            type="text"
-            value={sizeInput}
-            onChange={(e) => setSizeInput(e.target.value)}
-            onKeyDown={handleAddSize}
-            className="w-full bg-black border border-white/10 px-5 py-4 text-base text-white focus:border-white/40 outline-none transition-colors text-right rounded-sm"
-            placeholder="اكتب المقاس واضغط Enter (مثال: XL)"
-          />
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={addSize}
+              className="bg-white/10 text-white px-6 font-bold text-sm uppercase tracking-widest rounded-sm hover:bg-white/20 transition-colors border border-white/10"
+            >
+              إضافة
+            </button>
+            <input
+              type="text"
+              value={sizeInput}
+              onChange={(e) => setSizeInput(e.target.value)}
+              onKeyDown={handleAddSize}
+              className="flex-1 bg-black border border-white/10 px-5 py-4 text-base text-white focus:border-white/40 outline-none transition-colors text-right rounded-sm min-w-0"
+              placeholder="اكتب المقاس (مثال: XL)"
+            />
+          </div>
           {errors.sizes && <span className="text-red-400 text-xs">{errors.sizes.message}</span>}
         </div>
 
         {/* Variants Section */}
         <div className="flex flex-col gap-5 text-right mt-4 bg-black/40 p-6 border border-white/5 rounded-sm">
-          <div className="flex justify-between items-center border-b border-white/10 pb-4">
+          <div className="flex flex-col-reverse sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-4">
             <button
               type="button"
               onClick={() => append({ colorName: "", colorHex: "#ffffff", imageFile: null })}
-              className="flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-widest text-white transition-all border border-white/10"
+              className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-3 sm:py-2 rounded-sm text-xs font-bold uppercase tracking-widest text-white transition-all border border-white/10 w-full sm:w-auto"
             >
               <Plus size={16} /> إضافة لون آخر
             </button>
-            <label className="font-display text-lg uppercase tracking-widest text-white">الألوان والصور *</label>
+            <label className="font-display text-lg uppercase tracking-widest text-white w-full sm:w-auto text-right">الألوان والصور *</label>
           </div>
           
           <div className="flex flex-col gap-6 mt-4">
