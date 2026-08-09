@@ -11,9 +11,9 @@ export default function LoadingScreen() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Animate progress bar from 0 → 100 over ~1.8s
+    // Animate progress bar from 0 → 100 over ~0.5s
     const start = performance.now();
-    const duration = 1800;
+    const duration = 500;
 
     const tick = (now: number) => {
       const elapsed = now - start;
@@ -23,7 +23,7 @@ export default function LoadingScreen() {
         requestAnimationFrame(tick);
       } else {
         // Small pause at 100% then fade out
-        setTimeout(() => setVisible(false), 350);
+        setTimeout(() => setVisible(false), 200);
       }
     };
 

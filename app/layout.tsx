@@ -8,6 +8,9 @@ const cairo = Cairo({ subsets: ['arabic', 'latin'], variable: '--font-cairo', di
 export const metadata: Metadata = {
   title: 'زيوس — ملابس الشارع الفاخرة',
   description: 'زيوس. ملابس شارع فاخرة مصممة لأولئك الذين يتحركون بهدف.',
+  icons: {
+    icon: '/images/black.png',
+  },
   openGraph: {
     images: [
       {
