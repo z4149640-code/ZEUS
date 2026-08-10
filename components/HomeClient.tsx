@@ -121,7 +121,7 @@ export default function HomeClient({ products }: Props) {
         </p>
         <div className="mt-8 flex items-center justify-center gap-4">
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/mr.zeus_eg?igsh=NGU2a3Mzb2l5enlo"
             target="_blank"
             rel="noreferrer"
             className="flex h-12 w-12 items-center justify-center border border-white/20 text-white transition-colors hover:bg-white hover:text-black"
@@ -130,7 +130,7 @@ export default function HomeClient({ products }: Props) {
             <Instagram size={18} />
           </a>
           <a
-            href="mailto:hello@zeus.com"
+            href="mailto:mr.zeus7777798@gmail.com"
             className="flex h-12 w-12 items-center justify-center border border-white/20 text-white transition-colors hover:bg-white hover:text-black"
             aria-label="Email"
           >
