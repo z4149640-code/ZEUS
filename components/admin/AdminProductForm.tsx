@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -20,6 +20,8 @@ const productSchema = z.object({
   sizes: z.array(z.string()).min(1, "اختر مقاس واحد على الأقل"),
   variants: z.array(variantSchema).min(1, "أضف لون/نسخة واحدة على الأقل"),
   is_available: z.boolean().default(true),
+  size_chart_url: z.string().optional(),
+  sizeChartFile: z.any().optional(),
 });
 
 export type ProductFormData = z.infer<typeof productSchema>;
@@ -36,6 +38,7 @@ type Props = {
 
 export default function AdminProductForm({ onSubmit, isSubmitting, initialData, onCancelEdit }: Props) {
   const [sizeInput, setSizeInput] = useState("");
+  const sizeChartFileRef = useRef<HTMLInputElement | null>(null);
 
   const defaultValues = {
     title: "",
@@ -44,6 +47,8 @@ export default function AdminProductForm({ onSubmit, isSubmitting, initialData, 
     is_available: true,
     sizes: [],
     variants: [{ colorName: "", colorHex: "#ffffff", imageFile: null, imageUrl: "" }],
+    size_chart_url: "",
+    sizeChartFile: null,
   };
 
   const {
@@ -71,6 +76,8 @@ export default function AdminProductForm({ onSubmit, isSubmitting, initialData, 
           ...v,
           imageFile: null
         })),
+        size_chart_url: initialData.size_chart_url || "",
+        sizeChartFile: null,
       });
     } else {
       reset(defaultValues);
@@ -278,6 +285,62 @@ export default function AdminProductForm({ onSubmit, isSubmitting, initialData, 
             ))}
           </div>
           {errors.variants && !Array.isArray(errors.variants) && <span className="text-red-400 text-xs mt-2">{errors.variants.message}</span>}
+        </div>
+
+        {/* Size Chart Image */}
+        <div className="flex flex-col gap-3 text-right">
+          <label className="font-display text-xs uppercase tracking-widest text-white/60">صورة دليل المقاسات (Size Chart)</label>
+          <div className="flex items-center gap-4 bg-black border border-white/10 p-3 rounded-sm">
+            {watch("size_chart_url") ? (
+              <div className="shrink-0 relative w-16 h-16 group">
+                <div className="w-full h-full bg-white/5 rounded-sm border border-white/10 overflow-hidden">
+                  <img src={watch("size_chart_url")} alt="Size Chart Preview" className="w-full h-full object-cover" />
+                </div>
+                <button
+                  type="button"
+                  title="حذف صورة الكاتالوج"
+                  onClick={() => {
+                    setValue("size_chart_url", "", { shouldValidate: true });
+                    setValue("sizeChartFile", null, { shouldValidate: true });
+                    if (sizeChartFileRef.current) sizeChartFileRef.current.value = "";
+                  }}
+                  className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-400 text-white rounded-full w-5 h-5 flex items-center justify-center transition-colors shadow-md"
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            ) : (
+              <div className="shrink-0 w-16 h-16 bg-white/5 rounded-sm border border-dashed border-white/20 flex items-center justify-center">
+                <span className="text-white/20 text-[9px] uppercase tracking-widest font-display text-center leading-tight">No<br/>Image</span>
+              </div>
+            )}
+            <div className="flex-1 flex flex-col gap-1">
+              <input
+                type="file"
+                accept="image/*"
+                {...register("sizeChartFile")}
+                ref={(e) => {
+                  register("sizeChartFile").ref(e);
+                  sizeChartFileRef.current = e;
+                }}
+                className="w-full text-sm text-white/60 file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-widest file:bg-white/10 file:text-white hover:file:bg-white/20 transition-all cursor-pointer"
+              />
+              {watch("size_chart_url") && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setValue("size_chart_url", "", { shouldValidate: true });
+                    setValue("sizeChartFile", null, { shouldValidate: true });
+                    if (sizeChartFileRef.current) sizeChartFileRef.current.value = "";
+                  }}
+                  className="self-start text-[11px] text-red-400/80 hover:text-red-400 underline transition-colors font-display uppercase tracking-widest"
+                >
+                  × مسح الكاتالوج
+                </button>
+              )}
+            </div>
+          </div>
+          <p className="text-white/30 text-xs text-right">اختياري — ارفع صورة كاتالوج المقاسات الخاصة بهذا المنتج</p>
         </div>
 
         {/* Is Available */}

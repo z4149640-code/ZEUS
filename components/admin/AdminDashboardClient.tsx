@@ -77,6 +77,12 @@ export default function AdminDashboardClient() {
         });
       }
 
+      let sizeChartUrl = (formData as any).size_chart_url || "";
+      const sizeChartFileList = (formData as any).sizeChartFile as FileList;
+      if (sizeChartFileList && sizeChartFileList.length > 0) {
+        sizeChartUrl = await uploadProductImage(sizeChartFileList[0]);
+      }
+
       const productData = {
         title: formData.title,
         price: formData.price,
@@ -84,6 +90,7 @@ export default function AdminDashboardClient() {
         sizes: formData.sizes,
         variants: finalVariants,
         is_available: formData.is_available,
+        size_chart_url: sizeChartUrl || null,
       };
 
       if (editingProduct) {

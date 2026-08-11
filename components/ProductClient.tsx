@@ -16,6 +16,7 @@ type Props = {
 export default function ProductClient({ product, relatedProducts }: Props) {
   const addItem = useCartStore((s) => s.addItem);
   const [size, setSize] = useState<string | null>(null);
+  const [showSizeChart, setShowSizeChart] = useState(false);
   
   // Set default active variant to the first one available
   const [activeVariantIndex, setActiveVariantIndex] = useState(0);
@@ -169,17 +170,19 @@ export default function ProductClient({ product, relatedProducts }: Props) {
             {/* Size selector */}
             {product.sizes && product.sizes.length > 0 && (
               <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="font-display text-sm uppercase tracking-[0.2em] text-white/60">
-                    اختر المقاس
-                  </span>
-                  <button
-                    className="font-body text-xs text-white/40 underline hover:text-white transition-colors"
-                    onClick={() => alert("سيتم إضافة دليل المقاسات قريباً.")}
-                  >
-                    دليل المقاسات (Size Chart)
-                  </button>
-                </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="font-display text-sm uppercase tracking-[0.2em] text-white/60">
+                      اختر المقاس
+                    </span>
+                    {product.size_chart_url ? (
+                      <button
+                        className="font-body text-xs text-white/40 underline hover:text-white transition-colors"
+                        onClick={() => setShowSizeChart(true)}
+                      >
+                        دليل المقاسات (Size Chart)
+                      </button>
+                    ) : null}
+                  </div>
                 
                 <div className="flex flex-wrap gap-3">
                   {product.sizes.map((s) => (
@@ -291,6 +294,54 @@ export default function ProductClient({ product, relatedProducts }: Props) {
           </div>
         </motion.div>
       )}
+
+      {/* Size Chart Modal */}
+      <AnimatePresence>
+        {showSizeChart && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-md"
+            onClick={() => setShowSizeChart(false)}
+          >
+            {/* Header */}
+            <div
+              className="flex-shrink-0 flex items-center justify-between px-5 py-4 border-b border-white/10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowSizeChart(false)}
+                className="text-white/50 hover:text-white transition-colors p-1"
+                aria-label="إغلاق"
+              >
+                <ChevronRight size={22} />
+              </button>
+              <div className="text-right">
+                <h2 className="font-display text-sm font-bold uppercase tracking-[0.25em] text-white">دليل المقاسات</h2>
+                <p className="text-xs text-white/40 font-body mt-0.5">SIZE CHART — {product.title}</p>
+              </div>
+            </div>
+
+            {/* Image — fills the rest of the screen, perfectly centered */}
+            <div
+              className="flex-1 flex items-center justify-center p-4 overflow-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {product.size_chart_url ? (
+                <img
+                  src={product.size_chart_url}
+                  alt={`دليل مقاسات ${product.title}`}
+                  className="max-w-full max-h-full object-contain"
+                />
+              ) : (
+                <p className="text-white/30 font-display text-sm uppercase tracking-widest">لا تتوفر صورة دليل مقاسات</p>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

@@ -21,6 +21,7 @@ export type Product = {
   category?: string;
   description?: string;
   badge?: string;
+  size_chart_url?: string;
 };
 
 import imageCompression from 'browser-image-compression';

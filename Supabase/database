@@ -9,12 +9,16 @@ CREATE TABLE IF NOT EXISTS public.products (
   category TEXT,
   description TEXT,
   badge TEXT,
+  size_chart_url TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 -- تعطيل حماية الـ RLS مؤقتاً عشان نقدر نضيف ونمسح بيانات من لوحة التحكم براحتنا
 -- (مهم جداً لحل مشكلة 401 Unauthorized)
 ALTER TABLE public.products DISABLE ROW LEVEL SECURITY;
+
+-- لو الجدول موجود بالفعل، أضف العمود الجديد فقط:
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS size_chart_url TEXT;
 
 -- أو لو حابب تسيب الـ RLS شغال بس تسمح للكل يعملوا أي حاجة (Public Access):
 /*
