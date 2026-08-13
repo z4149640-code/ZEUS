@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { Minus, Plus, ChevronRight, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useCartStore, getBestOffer } from "@/lib/store";
@@ -93,16 +94,22 @@ export default function ProductClient({ product, relatedProducts }: Props) {
           >
             <AnimatePresence mode="wait">
               {currentImageUrl ? (
-                <motion.img
+                <motion.div
                   key={`${activeVariantIndex}-${activeImageIndex}`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.25 }}
-                  src={currentImageUrl}
-                  alt={product.title}
-                  className="w-full h-full object-contain p-4"
-                />
+                  className="absolute inset-0 w-full h-full p-4"
+                >
+                  <Image
+                    src={currentImageUrl}
+                    alt={product.title}
+                    fill
+                    quality={100}
+                    className="object-contain"
+                  />
+                </motion.div>
               ) : (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -165,10 +172,12 @@ export default function ProductClient({ product, relatedProducts }: Props) {
                   }`}
                   title={`صورة ${imgIdx + 1}`}
                 >
-                  <img
+                  <Image
                     src={imgUrl}
                     alt={`${activeVariant?.colorName} — صورة ${imgIdx + 1}`}
-                    className="w-full h-full object-contain p-1"
+                    fill
+                    quality={100}
+                    className="object-contain p-1"
                   />
                 </button>
               ))}
@@ -473,11 +482,15 @@ export default function ProductClient({ product, relatedProducts }: Props) {
               onClick={(e) => e.stopPropagation()}
             >
               {product.size_chart_url ? (
-                <img
-                  src={product.size_chart_url}
-                  alt={`دليل مقاسات ${product.title}`}
-                  className="max-w-full max-h-full object-contain"
-                />
+                <div className="relative w-full h-full max-h-[80vh]">
+                  <Image
+                    src={product.size_chart_url}
+                    alt={`دليل مقاسات ${product.title}`}
+                    fill
+                    quality={100}
+                    className="object-contain"
+                  />
+                </div>
               ) : (
                 <p className="text-white/30 font-display text-sm uppercase tracking-widest">لا تتوفر صورة دليل مقاسات</p>
               )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { Product } from "@/lib/supabase";
@@ -57,16 +58,21 @@ export default function ProductCard({ product, index = 0 }: Props) {
 
           {/* Product image — rendered on top of glow */}
           <div className="relative z-10 h-full w-full overflow-hidden">
-            <motion.img
+            <motion.div
               key={activeVariant?.images?.[0] || (activeVariant as any)?.imageUrl}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
-              src={activeVariant?.images?.[0] || (activeVariant as any)?.imageUrl}
-              alt={product.title}
-              loading="lazy"
-              className="h-full w-full object-contain transition-all duration-500 group-hover:scale-[1.04]"
-            />
+              className="absolute inset-0 h-full w-full transition-all duration-500 group-hover:scale-[1.04]"
+            >
+              <Image
+                src={activeVariant?.images?.[0] || (activeVariant as any)?.imageUrl || "/placeholder.png"}
+                alt={product.title}
+                fill
+                quality={100}
+                className="object-contain"
+              />
+            </motion.div>
           </div>
 
           {/* Bottom CTA on hover */}

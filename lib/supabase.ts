@@ -36,9 +36,10 @@ import imageCompression from 'browser-image-compression';
 
 export async function uploadProductImage(file: File) {
   const options = {
-    maxSizeMB: 0.5,
-    maxWidthOrHeight: 1200,
+    maxSizeMB: 1.5,
+    maxWidthOrHeight: 1920,
     useWebWorker: true,
+    initialQuality: 0.95,
   };
   
   let compressedFile = file;
