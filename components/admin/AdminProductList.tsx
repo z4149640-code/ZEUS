@@ -35,7 +35,8 @@ export default function AdminProductList({ products, onDelete, onEdit, isDeletin
         </thead>
         <tbody className="divide-y divide-white/5 font-body">
           {products.map((product) => {
-            const firstImage = product.variants?.[0]?.imageUrl;
+            const firstVariant = product.variants?.[0];
+            const firstImage = firstVariant?.images?.[0] || (firstVariant as any)?.imageUrl;
             return (
               <tr key={product.id} className="transition-colors hover:bg-white/5">
                 <td className="p-4 text-right">

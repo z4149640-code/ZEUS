@@ -5,10 +5,17 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// Each color variant now carries an array of images (main shot, back, close-up, etc.)
 export type ProductVariant = {
   colorName: string;
   colorHex: string;
-  imageUrl: string;
+  images: string[];
+};
+
+// A volume/bundle discount tier (e.g., Buy 2 for 700 EGP)
+export type ProductOffer = {
+  quantity: number;
+  price: number; // total price for `quantity` units
 };
 
 export type Product = {
@@ -22,6 +29,7 @@ export type Product = {
   description?: string;
   badge?: string;
   size_chart_url?: string;
+  offers?: ProductOffer[];
 };
 
 import imageCompression from 'browser-image-compression';

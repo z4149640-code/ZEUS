@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase, uploadProductImage, type Product, type ProductVariant } from "@/lib/supabase";
+import { supabase, uploadProductImage, type Product, type ProductVariant, type ProductOffer } from "@/lib/supabase";
 import AdminProductList from "./AdminProductList";
 import AdminProductForm, { type ProductFormData } from "./AdminProductForm";
 import { logoutAction } from "@/lib/actions/auth";
@@ -59,21 +59,27 @@ export default function AdminDashboardClient() {
 
       for (let index = 0; index < formData.variants.length; index++) {
         const variant = formData.variants[index];
-        let imageUrl = variant.imageUrl || "";
-        
-        // imageFile is a FileList, we take the first file if a new one was uploaded
-        const fileList = variant.imageFile as FileList;
+
+        // Start with any saved image URLs that are still in the form
+        let images: string[] = Array.isArray(variant.images) ? variant.images : [];
+
+        // Upload all newly selected files (FileList may contain multiple)
+        const fileList = variant.imageFiles as FileList;
         if (fileList && fileList.length > 0) {
-          const file = fileList[0];
-          imageUrl = await uploadProductImage(file);
-        } else if (!imageUrl) {
-           throw new Error(`مطلوب صورة للون ${variant.colorName}`);
+          for (let f = 0; f < fileList.length; f++) {
+            const uploadedUrl = await uploadProductImage(fileList[f]);
+            images.push(uploadedUrl);
+          }
+        }
+
+        if (images.length === 0) {
+          throw new Error(`مطلوب صورة واحدة على الأقل للون "${variant.colorName}"`);
         }
 
         finalVariants.push({
           colorName: variant.colorName,
           colorHex: variant.colorHex,
-          imageUrl: imageUrl,
+          images,
         });
       }
 
@@ -83,6 +89,11 @@ export default function AdminDashboardClient() {
         sizeChartUrl = await uploadProductImage(sizeChartFileList[0]);
       }
 
+      const finalOffers: ProductOffer[] = (formData.offers || []).map((o) => ({
+        quantity: Number(o.quantity),
+        price: Number(o.price),
+      }));
+
       const productData = {
         title: formData.title,
         price: formData.price,
@@ -91,6 +102,7 @@ export default function AdminDashboardClient() {
         variants: finalVariants,
         is_available: formData.is_available,
         size_chart_url: sizeChartUrl || null,
+        offers: finalOffers,
       };
 
       if (editingProduct) {

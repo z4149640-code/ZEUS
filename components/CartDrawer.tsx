@@ -6,7 +6,7 @@ import { X, Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useCartStore } from "@/lib/store";
+import { useCartStore, getItemLinePrice } from "@/lib/store";
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2, "يرجى إدخال الاسم الكامل"),
@@ -196,81 +196,105 @@ ${orderLines}
               ) : (
                 <ul className="flex flex-col gap-4">
                   <AnimatePresence initial={false}>
-                    {items.map((i) => (
-                      <motion.li
-                        key={`${i.product.id}-${i.size}-${i.color}`}
-                        layout
-                        initial={{ opacity: 0, x: 40 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 40 }}
-                        className="flex gap-3"
-                      >
-                        <div className="h-24 w-20 flex-shrink-0 overflow-hidden bg-transparent" style={{ background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 80%)' }}>
-                          <img
-                            src={i.product.variants?.find(v => v.colorName === i.color)?.imageUrl}
-                            alt={i.product.title}
-                            className="h-full w-full object-contain"
-                          />
-                        </div>
-                        <div className="flex flex-1 flex-col justify-between">
-                          <div>
-                            <p className="font-display text-sm font-semibold uppercase tracking-wide text-white">
-                              {i.product.title}
-                            </p>
-                            <p className="font-body text-xs text-white/50">
-                              اللون: {i.color} | المقاس: {i.size}
-                            </p>
+                    {items.map((i) => {
+                      const linePrice = getItemLinePrice(i, items);
+                      return (
+                        <motion.li
+                          key={`${i.product.id}-${i.size}-${i.color}`}
+                          layout
+                          initial={{ opacity: 0, x: 40 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 40 }}
+                          className="flex gap-3"
+                        >
+                          <div className="h-24 w-20 flex-shrink-0 overflow-hidden bg-transparent" style={{ background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.08) 0%, transparent 80%)' }}>
+                            <img
+                              src={
+                                i.product.variants?.find(v => v.colorName === i.color)?.images?.[0]
+                                ?? (i.product.variants?.find(v => v.colorName === i.color) as any)?.imageUrl
+                              }
+                              alt={i.product.title}
+                              className="h-full w-full object-contain"
+                            />
                           </div>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center border border-white/15">
-                              <button
-                                onClick={() =>
-                                  updateQuantity(
-                                    i.product.id,
-                                    i.size,
-                                    i.color,
-                                    i.quantity - 1
-                                  )
-                                }
-                                className="px-2 py-1 text-white/80 hover:bg-white/10"
-                                aria-label="Decrease"
-                              >
-                                <Minus size={12} />
-                              </button>
-                              <span className="w-8 text-center font-display text-sm text-white">
-                                {i.quantity}
-                              </span>
-                              <button
-                                onClick={() =>
-                                  updateQuantity(
-                                    i.product.id,
-                                    i.size,
-                                    i.color,
-                                    i.quantity + 1
-                                  )
-                                }
-                                className="px-2 py-1 text-white/80 hover:bg-white/10"
-                                aria-label="Increase"
-                              >
-                                <Plus size={12} />
-                              </button>
+                          <div className="flex flex-1 flex-col justify-between">
+                            <div>
+                              <p className="font-display text-sm font-semibold uppercase tracking-wide text-white">
+                                {i.product.title}
+                              </p>
+                              <p className="font-body text-xs text-white/50">
+                                اللون: {i.color} | المقاس: {i.size}
+                              </p>
+                              {/* Bundle discount badge */}
+                              {linePrice.offerApplied && (
+                                <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-bold bg-amber-400/15 text-amber-300 border border-amber-400/25 px-2 py-0.5 rounded-sm">
+                                  🔥 تم تطبيق الخصم
+                                </span>
+                              )}
                             </div>
-                            <div className="flex items-center gap-3">
-                              <span className="font-body text-sm font-semibold text-white">
-                                {(i.product.price * i.quantity).toLocaleString()}
-                              </span>
-                              <button
-                                onClick={() => removeItem(i.product.id, i.size, i.color)}
-                                className="text-white/40 transition-colors hover:text-red-400"
-                                aria-label="Remove item"
-                              >
-                                <Trash2 size={16} />
-                              </button>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center border border-white/15">
+                                <button
+                                  onClick={() =>
+                                    updateQuantity(
+                                      i.product.id,
+                                      i.size,
+                                      i.color,
+                                      i.quantity - 1
+                                    )
+                                  }
+                                  className="px-2 py-1 text-white/80 hover:bg-white/10"
+                                  aria-label="Decrease"
+                                >
+                                  <Minus size={12} />
+                                </button>
+                                <span className="w-8 text-center font-display text-sm text-white">
+                                  {i.quantity}
+                                </span>
+                                <button
+                                  onClick={() =>
+                                    updateQuantity(
+                                      i.product.id,
+                                      i.size,
+                                      i.color,
+                                      i.quantity + 1
+                                    )
+                                  }
+                                  className="px-2 py-1 text-white/80 hover:bg-white/10"
+                                  aria-label="Increase"
+                                >
+                                  <Plus size={12} />
+                                </button>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                {/* Price: strikethrough original + amber discounted if bundle applies */}
+                                {linePrice.offerApplied ? (
+                                  <div className="flex flex-col items-end gap-0.5">
+                                    <span className="text-white/35 line-through text-[11px] font-body leading-none">
+                                      {linePrice.original.toLocaleString()}
+                                    </span>
+                                    <span className="font-body text-sm font-bold text-amber-300 leading-none">
+                                      {linePrice.effective.toLocaleString()}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="font-body text-sm font-semibold text-white">
+                                    {linePrice.original.toLocaleString()}
+                                  </span>
+                                )}
+                                <button
+                                  onClick={() => removeItem(i.product.id, i.size, i.color)}
+                                  className="text-white/40 transition-colors hover:text-red-400"
+                                  aria-label="Remove item"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </motion.li>
-                    ))}
+                        </motion.li>
+                      );
+                    })}
                   </AnimatePresence>
                 </ul>
               )}
@@ -279,6 +303,22 @@ ${orderLines}
             {/* Footer */}
             {items.length > 0 && (
               <div className="border-t border-white/10 px-5 py-5">
+                {/* Savings summary if any bundle is active */}
+                {(() => {
+                  const originalTotal = items.reduce((s, i) => s + i.product.price * i.quantity, 0);
+                  const savings = originalTotal - total;
+                  if (savings <= 0) return null;
+                  return (
+                    <div className="mb-3 flex items-center justify-between bg-amber-400/10 border border-amber-400/20 px-3 py-2 rounded-sm">
+                      <span className="font-body text-xs font-bold text-amber-300">
+                        -{savings.toLocaleString()} ج.م
+                      </span>
+                      <span className="font-display text-xs uppercase tracking-wider text-amber-300">
+                        🔥 وفّرت
+                      </span>
+                    </div>
+                  );
+                })()}
                 <div className="mb-1 flex items-center justify-between">
                   <span className="font-display text-xs uppercase tracking-[0.2em] text-white/50">
                     المجموع الفرعي

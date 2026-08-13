@@ -58,11 +58,11 @@ export default function ProductCard({ product, index = 0 }: Props) {
           {/* Product image — rendered on top of glow */}
           <div className="relative z-10 h-full w-full overflow-hidden">
             <motion.img
-              key={activeVariant?.imageUrl}
+              key={activeVariant?.images?.[0] || (activeVariant as any)?.imageUrl}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
-              src={activeVariant?.imageUrl}
+              src={activeVariant?.images?.[0] || (activeVariant as any)?.imageUrl}
               alt={product.title}
               loading="lazy"
               className="h-full w-full object-contain transition-all duration-500 group-hover:scale-[1.04]"

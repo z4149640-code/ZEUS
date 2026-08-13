@@ -20,6 +20,10 @@ ALTER TABLE public.products DISABLE ROW LEVEL SECURITY;
 -- لو الجدول موجود بالفعل، أضف العمود الجديد فقط:
 ALTER TABLE public.products ADD COLUMN IF NOT EXISTS size_chart_url TEXT;
 
+-- Volume Discounts: array of { quantity, price } bundle offers per product
+-- Example: [{"quantity": 2, "price": 700}]  means "Buy 2 for 700 EGP"
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS offers JSONB DEFAULT '[]'::jsonb;
+
 -- أو لو حابب تسيب الـ RLS شغال بس تسمح للكل يعملوا أي حاجة (Public Access):
 /*
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
