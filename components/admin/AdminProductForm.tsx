@@ -152,6 +152,19 @@ export default function AdminProductForm({
     );
   };
 
+  const handleToggleOOS = (sizeToToggle: string) => {
+    setValue(
+      "sizes",
+      sizes.map((s) => {
+        if (s === sizeToToggle) {
+          return s.endsWith(":OOS") ? s.replace(":OOS", "") : s + ":OOS";
+        }
+        return s;
+      }),
+      { shouldValidate: true }
+    );
+  };
+
   // ─── Remove an already-saved image from a variant ────────────────────────
   const removeExistingImage = (variantIndex: number, imageIndex: number) => {
     const current = watch(`variants.${variantIndex}.images`) || [];
@@ -258,21 +271,39 @@ export default function AdminProductForm({
         <div className="flex flex-col gap-3 text-right">
           <label className="font-display text-xs uppercase tracking-widest text-white/60">المقاسات المتاحة *</label>
           <div className="flex flex-wrap gap-2 justify-end mb-2">
-            {sizes.map((s) => (
-              <span
-                key={s}
-                className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-sm text-sm font-display uppercase border border-white/5"
-              >
-                <button
-                  type="button"
-                  onClick={() => handleRemoveSize(s)}
-                  className="text-white/40 hover:text-white transition-colors"
+            {sizes.map((s) => {
+              const isOOS = s.endsWith(":OOS");
+              const displayName = isOOS ? s.replace(":OOS", "") : s;
+              return (
+                <span
+                  key={s}
+                  className={`flex flex-col gap-2 bg-white/10 px-3 py-2 rounded-sm text-sm font-display uppercase border ${
+                    isOOS ? "border-red-500/50 opacity-60" : "border-white/5"
+                  }`}
                 >
-                  <X size={16} />
-                </button>
-                {s}
-              </span>
-            ))}
+                  <div className="flex items-center gap-2 justify-between w-full">
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSize(s)}
+                      className="text-white/40 hover:text-white transition-colors"
+                      title="حذف المقاس"
+                    >
+                      <X size={16} />
+                    </button>
+                    <span className={isOOS ? "line-through text-white/50" : ""}>{displayName}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleToggleOOS(s)}
+                    className={`text-[10px] px-2 py-1 rounded-sm transition-colors ${
+                      isOOS ? "bg-red-500/20 text-red-300 hover:bg-red-500/30" : "bg-white/5 text-white/40 hover:bg-white/10"
+                    }`}
+                  >
+                    {isOOS ? "غير متاح (إرجاع)" : "تعيين كغير متاح"}
+                  </button>
+                </span>
+              );
+            })}
           </div>
           <div className="flex gap-2">
             <button

@@ -57,9 +57,19 @@ export default function AdminProductList({ products, onDelete, onEdit, isDeletin
                 <td className="p-4 text-right">{product.price.toLocaleString()} ج.م</td>
                 <td className="p-4 text-right text-xs">
                   <div className="flex flex-wrap gap-1 justify-end">
-                    {product.sizes?.map(s => (
-                      <span key={s} className="bg-white/10 px-1.5 py-0.5 rounded-sm">{s}</span>
-                    ))}
+                    {product.sizes?.map(s => {
+                      const isOOS = s.endsWith(":OOS");
+                      const displaySize = isOOS ? s.replace(":OOS", "") : s;
+                      return (
+                        <span 
+                          key={s} 
+                          className={`px-1.5 py-0.5 rounded-sm ${isOOS ? 'bg-red-500/20 text-red-300 line-through' : 'bg-white/10'}`}
+                          title={isOOS ? "غير متاح" : "متاح"}
+                        >
+                          {displaySize}
+                        </span>
+                      );
+                    })}
                   </div>
                 </td>
                 <td className="p-4 text-right text-xs">

@@ -278,19 +278,32 @@ export default function ProductClient({ product, relatedProducts }: Props) {
                 </div>
 
                 <div className="flex flex-wrap gap-3">
-                  {product.sizes.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => setSize(s)}
-                      className={`min-w-[60px] h-12 flex items-center justify-center border font-display text-sm font-semibold uppercase tracking-wider transition-all ${
-                        size === s
-                          ? "border-white bg-white text-black scale-105"
-                          : "border-white/20 text-white/80 hover:border-white/60 hover:bg-white/5"
-                      }`}
-                    >
-                      {s}
-                    </button>
-                  ))}
+                  {product.sizes.map((s) => {
+                    const isOOS = s.endsWith(":OOS");
+                    const displaySize = isOOS ? s.replace(":OOS", "") : s;
+                    return (
+                      <button
+                        key={s}
+                        onClick={() => !isOOS && setSize(s)}
+                        disabled={isOOS}
+                        title={isOOS ? "غير متاح حالياً" : ""}
+                        className={`min-w-[60px] h-12 relative overflow-hidden flex items-center justify-center border font-display text-sm font-semibold uppercase tracking-wider transition-all ${
+                          isOOS
+                            ? "border-white/10 text-white/20 cursor-not-allowed bg-white/5"
+                            : size === s
+                            ? "border-white bg-white text-black scale-105"
+                            : "border-white/20 text-white/80 hover:border-white/60 hover:bg-white/5"
+                        }`}
+                      >
+                        {isOOS && (
+                          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div className="w-full h-[2px] bg-white/30 rotate-[-25deg] scale-125"></div>
+                          </div>
+                        )}
+                        <span className={isOOS ? "opacity-50" : ""}>{displaySize}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
