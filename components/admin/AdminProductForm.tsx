@@ -10,6 +10,7 @@ import { Plus, Trash2, X, Tag, ImagePlus } from "lucide-react";
 
 const variantSchema = z.object({
   colorName: z.string().min(1, "مطلوب"),
+  colorName_en: z.string().optional(),
   colorHex: z.string().min(4, "مطلوب"),
   images: z.array(z.string()).default([]),   // existing saved URLs
   imageFiles: z.any().optional(),            // newly selected FileList
@@ -26,8 +27,10 @@ const offerSchema = z.object({
 
 const productSchema = z.object({
   title: z.string().min(2, "يرجى إدخال اسم المنتج"),
+  title_en: z.string().optional(),
   price: z.number().min(1, "يرجى إدخال السعر"),
   description: z.string().optional(),
+  description_en: z.string().optional(),
   sizes: z.array(z.string()).min(1, "اختر مقاس واحد على الأقل"),
   variants: z.array(variantSchema).min(1, "أضف لون/نسخة واحدة على الأقل"),
   offers: z.array(offerSchema).default([]),
@@ -50,11 +53,13 @@ type Props = {
   onCancelEdit?: () => void;
 };
 
-const defaultVariant = { colorName: "", colorHex: "#ffffff", images: [], imageFiles: null };
+const defaultVariant = { colorName: "", colorName_en: "", colorHex: "#ffffff", images: [], imageFiles: null };
 const defaultValues: ProductFormData = {
   title: "",
+  title_en: "",
   price: "" as unknown as number,
   description: "",
+  description_en: "",
   is_available: true,
   sizes: [],
   variants: [defaultVariant],
@@ -74,12 +79,15 @@ export default function AdminProductForm({
 
   const computedInitialData = initialData ? {
     title: initialData.title,
+    title_en: initialData.title_en || "",
     price: initialData.price,
     description: initialData.description || "",
+    description_en: initialData.description_en || "",
     sizes: initialData.sizes,
     is_available: initialData.is_available,
     variants: initialData.variants.map((v) => ({
       colorName: v.colorName,
+      colorName_en: v.colorName_en || "",
       colorHex: v.colorHex,
       images: v.images || [],
       imageFiles: null,
@@ -183,40 +191,67 @@ export default function AdminProductForm({
 
       <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-8 p-8">
 
-        {/* Title & Price */}
+        {/* Title */}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <div className="flex flex-col gap-3 text-right">
-            <label className="font-display text-xs uppercase tracking-widest text-white/60">اسم المنتج *</label>
+            <label className="font-display text-xs uppercase tracking-widest text-white/60">اسم المنتج (عربي) *</label>
             <input
               {...register("title")}
               className="w-full bg-black border border-white/10 px-5 py-4 text-lg text-white focus:border-white/40 outline-none transition-colors text-right rounded-sm"
-              placeholder="مثال: ZEUS Hoodie"
+              placeholder="مثال: تيشرت زيوس"
             />
             {errors.title && <span className="text-red-400 text-xs">{errors.title.message}</span>}
           </div>
 
-          <div className="flex flex-col gap-3 text-right">
-            <label className="font-display text-xs uppercase tracking-widest text-white/60">السعر (ج.م) *</label>
+          <div className="flex flex-col gap-3 text-right md:text-left">
+            <label className="font-display text-xs uppercase tracking-widest text-white/60">
+              اسم المنتج (إنجليزي)
+            </label>
             <input
-              type="number"
-              {...register("price", { valueAsNumber: true })}
-              className="w-full bg-black border border-white/10 px-5 py-4 text-lg text-white focus:border-white/40 outline-none transition-colors text-right rounded-sm"
-              placeholder="999"
+              {...register("title_en")}
+              className="w-full rounded-sm border border-white/10 bg-black px-5 py-4 text-lg text-white outline-none transition-colors focus:border-white/40 md:text-left"
+              placeholder="e.g. ZEUS T-Shirt"
+              dir="ltr"
             />
-            {errors.price && <span className="text-red-400 text-xs">{errors.price.message}</span>}
           </div>
         </div>
 
-        {/* Description */}
+        {/* Price */}
         <div className="flex flex-col gap-3 text-right">
-          <label className="font-display text-xs uppercase tracking-widest text-white/60">الوصف</label>
-          <textarea
-            {...register("description")}
-            rows={6}
-            className="w-full bg-black border border-white/10 px-5 py-4 text-base text-white focus:border-white/40 outline-none transition-colors resize-y rounded-sm text-right leading-relaxed"
-            placeholder="تفاصيل المنتج، الخامة، وأي معلومات إضافية..."
+          <label className="font-display text-xs uppercase tracking-widest text-white/60">السعر (ج.م) *</label>
+          <input
+            type="number"
+            {...register("price", { valueAsNumber: true })}
+            className="w-full bg-black border border-white/10 px-5 py-4 text-lg text-white focus:border-white/40 outline-none transition-colors text-right rounded-sm"
+            placeholder="999"
           />
-          {errors.description && <span className="text-red-400 text-xs">{errors.description.message}</span>}
+          {errors.price && <span className="text-red-400 text-xs">{errors.price.message}</span>}
+        </div>
+
+        {/* Description */}
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div className="flex flex-col gap-3 text-right">
+            <label className="font-display text-xs uppercase tracking-widest text-white/60">
+              الوصف (عربي)
+            </label>
+            <textarea
+              {...register("description")}
+              className="w-full rounded-sm border border-white/10 bg-black px-5 py-4 text-white outline-none transition-colors focus:border-white/40"
+              rows={4}
+            />
+          </div>
+
+          <div className="flex flex-col gap-3 text-right md:text-left">
+            <label className="font-display text-xs uppercase tracking-widest text-white/60">
+              الوصف (إنجليزي)
+            </label>
+            <textarea
+              {...register("description_en")}
+              className="w-full rounded-sm border border-white/10 bg-black px-5 py-4 text-white outline-none transition-colors focus:border-white/40 md:text-left"
+              rows={4}
+              dir="ltr"
+            />
+          </div>
         </div>
 
         {/* Sizes */}
@@ -299,7 +334,7 @@ export default function AdminProductForm({
                   {/* Color Name + Picker Row */}
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                     <div className="lg:col-span-5 flex flex-col gap-2">
-                      <label className="text-[11px] text-white/40 uppercase tracking-widest font-bold">اسم اللون</label>
+                      <label className="text-[11px] text-white/40 uppercase tracking-widest font-bold">اسم اللون (عربي)</label>
                       <input
                         {...register(`variants.${index}.colorName`)}
                         className="w-full bg-black border border-white/10 px-4 py-3 text-sm outline-none focus:border-white/40 text-right rounded-sm"
@@ -308,6 +343,16 @@ export default function AdminProductForm({
                       {errors.variants?.[index]?.colorName && (
                         <span className="text-red-400 text-xs">{errors.variants[index]?.colorName?.message}</span>
                       )}
+                    </div>
+
+                    <div className="lg:col-span-5 flex flex-col gap-2">
+                      <label className="text-[11px] text-white/40 uppercase tracking-widest font-bold text-right md:text-left">اسم اللون (إنجليزي)</label>
+                      <input
+                        {...register(`variants.${index}.colorName_en`)}
+                        className="w-full bg-black border border-white/10 px-4 py-3 text-sm outline-none focus:border-white/40 md:text-left rounded-sm"
+                        placeholder="e.g. Jet Black"
+                        dir="ltr"
+                      />
                     </div>
 
                     <div className="lg:col-span-2 flex flex-col gap-2 items-end">
@@ -320,7 +365,7 @@ export default function AdminProductForm({
                     </div>
 
                     {/* Multi-Image Upload */}
-                    <div className="lg:col-span-5 flex flex-col gap-3">
+                    <div className="lg:col-span-12 flex flex-col gap-3">
                       <label className="text-[11px] text-white/40 uppercase tracking-widest font-bold">
                         صور اللون
                         <span className="normal-case ml-2 text-white/20">(متعددة)</span>

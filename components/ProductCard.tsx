@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { Product } from "@/lib/supabase";
+import { useTranslations, useLocale } from "next-intl";
 
 type Props = {
   product: Product;
@@ -13,6 +14,8 @@ type Props = {
 
 export default function ProductCard({ product, index = 0 }: Props) {
   const [activeVariantIndex, setActiveVariantIndex] = useState(0);
+  const t = useTranslations("Storefront");
+  const locale = useLocale();
   
   const activeVariant = product.variants?.[activeVariantIndex] || product.variants?.[0];
 
@@ -78,20 +81,20 @@ export default function ProductCard({ product, index = 0 }: Props) {
           {/* Bottom CTA on hover */}
           <div className="absolute inset-x-0 bottom-0 z-20 flex items-end justify-center pb-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
             <span className="bg-white/10 px-4 py-1.5 font-display text-[10px] font-semibold uppercase tracking-[0.3em] text-white backdrop-blur-sm">
-              التفاصيل
+              {t('details')}
             </span>
           </div>
         </div>
 
         {/* ── Card info ─────────────────────────────────────────────────────── */}
         <div className="mt-3 flex flex-col gap-2">
-          <div className="flex justify-between items-start gap-2 text-right">
+          <div className="flex justify-between items-start gap-2 text-start">
             <div className="flex flex-col gap-1">
               <span className="font-display text-sm font-semibold uppercase tracking-widest text-white/90 transition-colors duration-300 group-hover:text-white">
-                {product.title}
+                {locale === 'en' && product.title_en ? product.title_en : product.title}
               </span>
               <span className="font-body text-sm font-semibold text-white/60 transition-colors duration-300 group-hover:text-white/90">
-                {product.price.toLocaleString()} ج.م
+                {product.price.toLocaleString()} {locale === 'en' ? 'EGP' : 'ج.م'}
               </span>
             </div>
             

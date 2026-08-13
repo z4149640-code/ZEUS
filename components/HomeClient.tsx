@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowDown, Instagram, Mail } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import type { Product } from "@/lib/supabase";
+import { useTranslations } from "next-intl";
 
 const LOGO = "/images/WhatsApp_Image_2026-07-18_at_3.42.36_AM-removebg-preview.png";
 
@@ -13,6 +14,8 @@ type Props = {
 };
 
 export default function HomeClient({ products }: Props) {
+  const t = useTranslations("Storefront");
+
   return (
     <>
       {/* Hero */}
@@ -45,7 +48,7 @@ export default function HomeClient({ products }: Props) {
           transition={{ duration: 0.8, delay: 0.75 }}
           className="mt-16 max-w-md font-body text-sm leading-relaxed text-white/55 sm:mt-20 sm:text-base"
         >
-          مصممة لأولئك الذين يتحركون بهدف. خامات ثقيلة، قصّات وحشية، وبدون أي تنازلات.
+          {t('heroSubtitle')}
         </motion.p>
         <motion.a
           href="#catalog"
@@ -54,7 +57,7 @@ export default function HomeClient({ products }: Props) {
           transition={{ duration: 0.6, delay: 0.95 }}
           className="mt-10 inline-flex items-center gap-2 border border-white/30 px-8 py-3 font-display text-xs font-semibold uppercase tracking-[0.25em] text-white transition-all duration-300 hover:bg-white hover:text-black hover:shadow-[0_0_30px_rgba(255,255,255,0.25)]"
         >
-          تسوق التشكيلة
+          {t('shopCollection')}
           <ArrowDown size={14} />
         </motion.a>
       </section>
@@ -71,7 +74,7 @@ export default function HomeClient({ products }: Props) {
             viewport={{ once: true }}
             className="font-display text-xs uppercase tracking-[0.4em] text-white/40"
           >
-            التشكيلة المميزة
+            {t('featuredCollection')}
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, x: -20 }}
@@ -80,7 +83,7 @@ export default function HomeClient({ products }: Props) {
             transition={{ delay: 0.05 }}
             className="font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-5xl"
           >
-            الترسانة
+            {t('theArsenal')}
           </motion.h2>
         </div>
 
@@ -106,7 +109,7 @@ export default function HomeClient({ products }: Props) {
           viewport={{ once: true }}
           className="font-display text-xs uppercase tracking-[0.4em] text-white/40"
         >
-          تواصل معنا
+          {t('contactUs')}
         </motion.span>
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -114,10 +117,10 @@ export default function HomeClient({ products }: Props) {
           viewport={{ once: true }}
           className="mt-3 font-display text-4xl font-bold uppercase tracking-tight text-white sm:text-5xl"
         >
-          انضم إلى القطيع
+          {t('joinThePack')}
         </motion.h2>
         <p className="mx-auto mt-4 max-w-md font-body text-sm text-white/60">
-          أسئلة، تعاونات، أو طلبات خاصة — تواصل معنا مباشرة.
+          {t('contactDesc')}
         </p>
         <div className="mt-8 flex items-center justify-center gap-4">
           <a
@@ -143,10 +146,10 @@ export default function HomeClient({ products }: Props) {
       <footer className="relative border-t border-white/10 py-8">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6 lg:px-8">
           <span className="font-display text-xl font-bold uppercase tracking-[0.35em] text-white">
-            زيوس
+            Zeus
           </span>
           <p className="font-body text-xs uppercase tracking-widest text-white/40">
-            © {new Date().getFullYear()} زيوس. جميع الحقوق محفوظة.
+            © {new Date().getFullYear()} Zeus. {t('allRightsReserved')}
           </p>
         </div>
       </footer>

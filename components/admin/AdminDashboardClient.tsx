@@ -78,6 +78,7 @@ export default function AdminDashboardClient() {
 
         finalVariants.push({
           colorName: variant.colorName,
+          colorName_en: (variant as any).colorName_en || "",
           colorHex: variant.colorHex,
           images,
         });
@@ -96,8 +97,10 @@ export default function AdminDashboardClient() {
 
       const productData = {
         title: formData.title,
+        title_en: formData.title_en || null,
         price: formData.price,
         description: formData.description,
+        description_en: formData.description_en || null,
         sizes: formData.sizes,
         variants: finalVariants,
         is_available: formData.is_available,

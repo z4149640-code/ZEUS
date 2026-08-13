@@ -1,3 +1,5 @@
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Cairo } from 'next/font/google';
@@ -32,16 +34,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params: { locale },
 }: {
   children: React.ReactNode;
+  params: { locale: string };
 }) {
+  const messages = await getMessages();
+  const direction = locale === 'ar' ? 'rtl' : 'ltr';
+
   return (
-    <html lang="ar" dir="rtl" className={`${cairo.variable} ${cairo.variable}`}>
+    <html lang={locale} dir={direction} className={`${cairo.variable} ${cairo.variable}`}>
       <body className="bg-black font-cairo text-white antialiased">
-        <GlobalUI />
-        {children}
+        <NextIntlClientProvider messages={messages} locale={locale}>
+          <GlobalUI />
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );

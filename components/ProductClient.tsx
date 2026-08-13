@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Minus, Plus, ChevronRight, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useCartStore, getBestOffer } from "@/lib/store";
+import { useTranslations, useLocale } from "next-intl";
 import ProductCard from "@/components/ProductCard";
 import type { Product } from "@/lib/supabase";
 
@@ -18,6 +19,9 @@ export default function ProductClient({ product, relatedProducts }: Props) {
   const addItem = useCartStore((s) => s.addItem);
   const [size, setSize] = useState<string | null>(null);
   const [showSizeChart, setShowSizeChart] = useState(false);
+
+  const t = useTranslations("Storefront");
+  const locale = useLocale();
 
   // Which color variant is active
   const [activeVariantIndex, setActiveVariantIndex] = useState(0);
@@ -45,7 +49,7 @@ export default function ProductClient({ product, relatedProducts }: Props) {
     for (let i = 0; i < qty; i++) {
       addItem(product, size, activeVariant.colorName);
     }
-    useCartStore.getState().openCart();
+    // Removed openCart() so user isn't interrupted
   };
 
   const handleBuyNow = () => {
@@ -68,11 +72,11 @@ export default function ProductClient({ product, relatedProducts }: Props) {
       {/* Breadcrumb / Back button */}
       <div className="mb-8">
         <Link
-          href="/"
+          href={`/${locale}`}
           className="inline-flex items-center text-sm font-display text-white/50 hover:text-white transition-colors uppercase tracking-widest"
         >
           <ChevronRight size={16} className="ml-1" />
-          العودة للرئيسية
+          {t('backToHome')}
         </Link>
       </div>
 
@@ -193,14 +197,14 @@ export default function ProductClient({ product, relatedProducts }: Props) {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <span className="font-display text-xs uppercase tracking-[0.3em] text-white/40 bg-white/5 px-3 py-1 rounded-full">
-              {product.category || "منتج"}
+              {product.category || t('product')}
             </span>
             <h1 className="mt-4 font-display text-3xl font-bold uppercase tracking-wide text-white sm:text-4xl lg:text-5xl leading-tight">
-              {product.title}
+              {locale === 'en' ? (product.title_en || product.title) : product.title}
             </h1>
             <div className="mt-4 flex items-center gap-4">
               <p className="font-body text-2xl font-bold text-white">
-                {product.price.toLocaleString()} ج.م
+                {product.price.toLocaleString()} {locale === 'en' ? 'EGP' : 'ج.م'}
               </p>
               {product.badge && (
                 <span className="bg-white text-black px-2 py-0.5 text-xs font-bold uppercase tracking-widest rounded-sm">
@@ -218,7 +222,7 @@ export default function ProductClient({ product, relatedProducts }: Props) {
               className="mt-8"
             >
               <p className="font-body text-base leading-relaxed text-white/70 max-w-lg whitespace-pre-wrap">
-                {product.description}
+                {locale === 'en' ? (product.description_en || product.description) : product.description}
               </p>
             </motion.div>
           )}
@@ -232,16 +236,18 @@ export default function ProductClient({ product, relatedProducts }: Props) {
             {/* Color selector */}
             {product.variants && product.variants.length > 0 && (
               <div className="mb-6">
-                <span className="font-display text-sm uppercase tracking-[0.2em] text-white/60 block mb-3">
-                  اختر اللون:{" "}
-                  <span className="text-white ml-1 font-body">{activeVariant?.colorName}</span>
+                <span className="font-display text-xs uppercase tracking-widest text-white/60 block mb-3">
+                  {t('selectColor')}:{" "}
+                  <span className="text-white ml-1 font-body">
+                    {locale === 'en' && activeVariant?.colorName_en ? activeVariant.colorName_en : activeVariant?.colorName}
+                  </span>
                 </span>
                 <div className="flex flex-wrap gap-3">
                   {product.variants.map((v, idx) => (
                     <button
                       key={idx}
                       onClick={() => setActiveVariantIndex(idx)}
-                      title={v.colorName}
+                      title={locale === 'en' && v.colorName_en ? v.colorName_en : v.colorName}
                       className={`relative w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                         activeVariantIndex === idx
                           ? "ring-2 ring-white ring-offset-2 ring-offset-black scale-110"
@@ -258,15 +264,15 @@ export default function ProductClient({ product, relatedProducts }: Props) {
             {product.sizes && product.sizes.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="font-display text-sm uppercase tracking-[0.2em] text-white/60">
-                    اختر المقاس
+                  <span className="font-display text-xs uppercase tracking-widest text-white/60">
+                    {t('selectSize')}
                   </span>
                   {product.size_chart_url ? (
                     <button
                       className="font-body text-xs text-white/40 underline hover:text-white transition-colors"
                       onClick={() => setShowSizeChart(true)}
                     >
-                      دليل المقاسات (Size Chart)
+                      {t('sizeGuide')}
                     </button>
                   ) : null}
                 </div>
@@ -298,7 +304,7 @@ export default function ProductClient({ product, relatedProducts }: Props) {
             className="mt-8"
           >
             <span className="font-display text-sm uppercase tracking-[0.2em] text-white/60 block mb-4">
-              الكمية
+              {t('quantity')}
             </span>
             <div className="flex items-center gap-6">
               <div className="flex h-12 w-32 items-center justify-between border border-white/20 bg-transparent">
@@ -328,7 +334,7 @@ export default function ProductClient({ product, relatedProducts }: Props) {
               className="mt-6"
             >
               <span className="font-display text-xs uppercase tracking-[0.2em] text-white/40 block mb-3">
-                عروض خاصة
+                {t('specialOffers')}
               </span>
               <div className="flex flex-col gap-2">
                 {[...product.offers]
@@ -347,30 +353,30 @@ export default function ProductClient({ product, relatedProducts }: Props) {
                         }`}
                       >
                         <span className="text-xl flex-shrink-0">🔥</span>
-                        <div className="flex-1 text-right">
+                        <div className="flex-1 text-start">
                           <span
                             className={`font-body text-sm leading-snug ${
                               isActive ? "text-amber-200" : "text-white/65"
                             }`}
                           >
-                            اشتري{" "}
-                            <strong className={isActive ? "text-amber-100" : "text-white"}>
-                              {offer.quantity}
-                            </strong>{" "}
-                            قطع بسعر إجمالي{" "}
-                            <strong className={isActive ? "text-amber-100" : "text-white"}>
-                              {offer.price.toLocaleString()} ج.م
-                            </strong>{" "}
-                            فقط!
+                            {t.rich('bundleOfferString', {
+                              quantity: offer.quantity,
+                              price: offer.price.toLocaleString(),
+                              strong: (chunks) => (
+                                <strong className={isActive ? "text-amber-100" : "text-white"}>
+                                  {chunks}
+                                </strong>
+                              )
+                            })}
                           </span>
                         </div>
                         {isActive ? (
                           <span className="flex-shrink-0 text-[10px] font-bold uppercase tracking-wider text-amber-300 bg-amber-400/20 px-2 py-1 rounded-sm">
-                            ✓ مفعّل
+                            ✓ {t('offerActive')}
                           </span>
                         ) : (
                           <span className="flex-shrink-0 text-[10px] text-white/30 uppercase tracking-wider">
-                            {offer.quantity - qty} أكثر
+                            {t('offerMoreNeeded', { count: offer.quantity - qty })}
                           </span>
                         )}
                       </motion.div>
@@ -394,16 +400,16 @@ export default function ProductClient({ product, relatedProducts }: Props) {
             >
               {size && activeVariant
                 ? activeOffer
-                  ? `إضافة للعربة — 🔥 عرض ${activeOffer.quantity} قطع بـ ${activeOffer.price.toLocaleString()} ج.م`
-                  : "إضافة إلى العربة (ADD TO CART)"
-                : "الرجاء اختيار المقاس"}
+                  ? t('addToCartOffer', { qty: activeOffer.quantity, price: activeOffer.price.toLocaleString() })
+                  : t('addToCartBtn')
+                : t('selectSizeRequired')}
             </button>
             <button
               onClick={handleBuyNow}
               disabled={!size || !activeVariant}
               className="w-full h-14 bg-white font-display text-sm font-bold uppercase tracking-[0.2em] text-black transition-all hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/20 disabled:text-white/50"
             >
-              شراء الآن (BUY IT NOW)
+              {t('buyNow')}
             </button>
           </motion.div>
 
@@ -415,12 +421,12 @@ export default function ProductClient({ product, relatedProducts }: Props) {
             className="mt-10 pt-6 border-t border-white/10 grid grid-cols-2 gap-4 text-center"
           >
             <div>
-              <span className="block font-display text-xs text-white/40 uppercase tracking-widest mb-1">تجهيز الطلب</span>
-              <span className="font-body text-sm text-white/80">١-٢ أيام عمل</span>
+              <span className="block font-display text-xs text-white/40 uppercase tracking-widest mb-1">{t('orderProcessing')}</span>
+              <span className="font-body text-sm text-white/80">{t('orderProcessingTime')}</span>
             </div>
             <div>
-              <span className="block font-display text-xs text-white/40 uppercase tracking-widest mb-1">التوصيل</span>
-              <span className="font-body text-sm text-white/80">٣-٥ أيام عمل</span>
+              <span className="block font-display text-xs text-white/40 uppercase tracking-widest mb-1">{t('shipping')}</span>
+              <span className="font-body text-sm text-white/80">{t('shippingTime')}</span>
             </div>
           </motion.div>
         </div>
@@ -435,10 +441,12 @@ export default function ProductClient({ product, relatedProducts }: Props) {
           transition={{ duration: 0.7 }}
           className="mt-32 pt-16 border-t border-white/10"
         >
-          <h3 className="font-display text-2xl font-bold uppercase tracking-widest text-center text-white mb-12">
-            قد يعجبك أيضاً
-            <span className="block text-sm text-white/40 mt-2 tracking-[0.3em]">YOU MAY ALSO LIKE</span>
-          </h3>
+          <div className="mb-10 flex items-center gap-4">
+            <h2 className="font-display text-2xl font-bold uppercase tracking-widest text-white">
+              {t('relatedProducts')}
+            </h2>
+            <div className="h-px flex-1 bg-white/10"></div>
+          </div>
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {relatedProducts.map((p, i) => (
               <ProductCard key={p.id} product={p} index={i} />
@@ -471,7 +479,7 @@ export default function ProductClient({ product, relatedProducts }: Props) {
                 <ChevronRight size={22} />
               </button>
               <div className="text-right">
-                <h2 className="font-display text-sm font-bold uppercase tracking-[0.25em] text-white">دليل المقاسات</h2>
+                <h2 className="font-display text-sm font-bold uppercase tracking-[0.25em] text-white">{t('sizeChartTitle')}</h2>
                 <p className="text-xs text-white/40 font-body mt-0.5">SIZE CHART — {product.title}</p>
               </div>
             </div>
@@ -492,7 +500,7 @@ export default function ProductClient({ product, relatedProducts }: Props) {
                   />
                 </div>
               ) : (
-                <p className="text-white/30 font-display text-sm uppercase tracking-widest">لا تتوفر صورة دليل مقاسات</p>
+                <p className="text-white/30 font-display text-sm uppercase tracking-widest">{t('noSizeGuide')}</p>
               )}
             </div>
           </motion.div>

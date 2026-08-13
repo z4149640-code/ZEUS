@@ -8,6 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // Each color variant now carries an array of images (main shot, back, close-up, etc.)
 export type ProductVariant = {
   colorName: string;
+  colorName_en?: string;
   colorHex: string;
   images: string[];
 };
@@ -21,12 +22,14 @@ export type ProductOffer = {
 export type Product = {
   id: string;
   title: string;
+  title_en?: string;
   price: number;
   sizes: string[];
   variants: ProductVariant[];
   is_available: boolean;
   category?: string;
   description?: string;
+  description_en?: string;
   badge?: string;
   size_chart_url?: string;
   offers?: ProductOffer[];
@@ -50,16 +53,26 @@ export async function uploadProductImage(file: File) {
     // Proceed with the original file if compression fails
   }
 
-  const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "")}`;
-  const { error } = await supabase.storage.from("product-images").upload(fileName, compressedFile, {
-    cacheControl: "3600",
-    upsert: false,
-  });
+  const formData = new FormData();
+  formData.append('file', compressedFile);
+  formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || '');
+
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
   
-  if (error) {
-    throw error;
+  if (!cloudName) {
+    throw new Error('Cloudinary cloud name is missing in environment variables.');
   }
-  
-  const { data: publicUrlData } = supabase.storage.from("product-images").getPublicUrl(fileName);
-  return publicUrlData.publicUrl;
+
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.error?.message || 'Failed to upload image to Cloudinary');
+  }
+
+  const data = await response.json();
+  return data.secure_url;
 }

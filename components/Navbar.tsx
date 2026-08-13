@@ -5,12 +5,8 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Menu, X } from "lucide-react";
 import { useCartStore } from "@/lib/store";
-
-const links = [
-  { label: "الرئيسية", href: "/#home" },
-  { label: "المنتجات", href: "/#catalog" },
-  { label: "تواصل معنا", href: "/#contact" },
-];
+import { useTranslations } from "next-intl";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -18,6 +14,14 @@ export default function Navbar() {
   const [isMounted, setIsMounted] = useState(false);
   const openCart = useCartStore((s) => s.openCart);
   const totalItems = useCartStore((s) => s.totalItems());
+
+  const t = useTranslations("Storefront");
+
+  const links = [
+    { label: t('navHome'), href: "/#home" },
+    { label: t('navCatalog'), href: "/#catalog" },
+    { label: t('navContact'), href: "/#contact" },
+  ];
 
   useEffect(() => {
     setIsMounted(true);
@@ -71,11 +75,13 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Right: cart */}
-          <div className="flex flex-1 items-center justify-end">
+          {/* Right: cart & language */}
+          <div className="flex flex-1 items-center justify-end gap-5">
+            <LanguageSwitcher />
+            
             <button
               onClick={openCart}
-              className="relative text-white transition-transform hover:scale-110"
+              className="relative text-white/80 transition-transform hover:scale-110 hover:text-white"
               aria-label="Open cart"
             >
               <ShoppingBag size={22} />
