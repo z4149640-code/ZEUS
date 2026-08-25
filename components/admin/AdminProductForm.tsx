@@ -15,6 +15,7 @@ const variantSchema = z.object({
   images: z.array(z.string()).default([]),   // existing saved URLs
   imageFiles: z.any().optional(),            // newly selected FileList
   disabledSizes: z.array(z.string()).default([]),
+  quantities: z.any().optional(),
 });
 
 const offerSchema = z.object({
@@ -54,7 +55,7 @@ type Props = {
   onCancelEdit?: () => void;
 };
 
-const defaultVariant = { colorName: "", colorName_en: "", colorHex: "#ffffff", images: [], imageFiles: null, disabledSizes: [] };
+const defaultVariant = { colorName: "", colorName_en: "", colorHex: "#ffffff", images: [], imageFiles: null, disabledSizes: [], quantities: {} };
 const defaultValues: ProductFormData = {
   title: "",
   title_en: "",
@@ -92,7 +93,18 @@ export default function AdminProductForm({
       colorHex: v.colorHex,
       images: v.images || [],
       imageFiles: null,
-      disabledSizes: v.disabledSizes || [],
+      disabledSizes: [],
+      quantities: (() => {
+        const q = { ...(v.quantities || {}) };
+        if (v.disabledSizes) {
+          for (const ds of v.disabledSizes) {
+            if (q[ds] === undefined) {
+              q[ds] = 0;
+            }
+          }
+        }
+        return q;
+      })(),
     })),
     offers: initialData.offers || [],
     size_chart_url: initialData.size_chart_url || "",
@@ -448,47 +460,28 @@ export default function AdminProductForm({
                       </p>
                     </div>
 
-                    {/* Disabled Sizes for this variant */}
+                    {/* Size Quantities for this variant */}
                     <div className="lg:col-span-12 flex flex-col gap-3 mt-2 pt-4 border-t border-white/5">
                       <label className="text-[11px] text-white/40 uppercase tracking-widest font-bold">
-                        المقاسات غير المتاحة لهذا اللون
+                        الكمية المتاحة لكل مقاس (اتركه فارغاً لجعله غير محدود، 0 لجعله غير متاح)
                       </label>
                       {sizes.length === 0 ? (
                         <span className="text-white/20 text-xs">أضف مقاسات للمنتج أولاً من الأعلى.</span>
                       ) : (
-                        <div className="flex flex-wrap gap-2 justify-end">
+                        <div className="flex flex-wrap gap-4 justify-end">
                           {sizes.map((s) => {
                             const sizeName = s.replace(":OOS", "");
-                            const currentDisabledSizes = watch(`variants.${index}.disabledSizes`) || [];
-                            const isDisabled = currentDisabledSizes.includes(sizeName);
-
                             return (
-                              <button
-                                key={sizeName}
-                                type="button"
-                                onClick={() => {
-                                  if (isDisabled) {
-                                    setValue(
-                                      `variants.${index}.disabledSizes`,
-                                      currentDisabledSizes.filter((ds) => ds !== sizeName),
-                                      { shouldValidate: true }
-                                    );
-                                  } else {
-                                    setValue(
-                                      `variants.${index}.disabledSizes`,
-                                      [...currentDisabledSizes, sizeName],
-                                      { shouldValidate: true }
-                                    );
-                                  }
-                                }}
-                                className={`px-3 py-1.5 text-xs font-display uppercase tracking-widest rounded-sm border transition-colors ${
-                                  isDisabled
-                                    ? "bg-red-500/20 text-red-300 border-red-500/30"
-                                    : "bg-white/5 text-white/50 border-white/10 hover:bg-white/10 hover:text-white/80"
-                                }`}
-                              >
-                                {sizeName} {isDisabled && <span className="mr-1 text-[9px]">(غير متاح)</span>}
-                              </button>
+                              <div key={sizeName} className="flex items-center gap-2 bg-white/5 px-3 py-2 rounded-sm border border-white/10">
+                                <span className="text-xs font-display uppercase tracking-widest text-white/80 w-8">{sizeName}</span>
+                                <input
+                                  type="number"
+                                  placeholder="∞"
+                                  min="0"
+                                  {...register(`variants.${index}.quantities.${sizeName}`, { valueAsNumber: true })}
+                                  className="w-16 bg-black border border-white/20 px-2 py-1 text-sm outline-none focus:border-white/40 text-center rounded-sm"
+                                />
+                              </div>
                             );
                           })}
                         </div>

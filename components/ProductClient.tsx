@@ -17,6 +17,7 @@ type Props = {
 
 export default function ProductClient({ product, relatedProducts }: Props) {
   const addItem = useCartStore((s) => s.addItem);
+  const cartItems = useCartStore((s) => s.items);
   const [size, setSize] = useState<string | null>(null);
   const [showSizeChart, setShowSizeChart] = useState(false);
 
@@ -49,18 +50,38 @@ export default function ProductClient({ product, relatedProducts }: Props) {
   // Best offer that applies at the current quantity
   const activeOffer = getBestOffer(product.offers, qty);
 
+  const maxAvailableQty = size && activeVariant?.quantities && activeVariant.quantities[size] !== undefined
+    ? activeVariant.quantities[size]
+    : Infinity;
+
+  const cartItem = cartItems.find(
+    (i) => i.product.id === product?.id && i.size === size && i.color === activeVariant?.colorName
+  );
+  const cartQty = cartItem?.quantity || 0;
+  const remainingQty = Math.max(0, maxAvailableQty - cartQty);
+
+  useEffect(() => {
+    if (size && activeVariant && remainingQty > 0 && qty > remainingQty) {
+      setQty(remainingQty);
+    }
+  }, [size, activeVariant, remainingQty, qty]);
+
   const handleAddToCart = () => {
     if (!product || !size || !activeVariant) return;
-    for (let i = 0; i < qty; i++) {
+    const toAdd = Math.min(qty, remainingQty);
+    if (toAdd <= 0) return;
+    for (let i = 0; i < toAdd; i++) {
       addItem(product, size, activeVariant.colorName);
     }
-    // Removed openCart() so user isn't interrupted
   };
 
   const handleBuyNow = () => {
     if (!product || !size || !activeVariant) return;
-    for (let i = 0; i < qty; i++) {
-      addItem(product, size, activeVariant.colorName);
+    const toAdd = Math.min(qty, remainingQty);
+    if (toAdd > 0) {
+      for (let i = 0; i < toAdd; i++) {
+        addItem(product, size, activeVariant.colorName);
+      }
     }
     useCartStore.getState().setCheckoutMode(true);
     useCartStore.getState().openCart();
@@ -286,7 +307,14 @@ export default function ProductClient({ product, relatedProducts }: Props) {
                   {product.sizes.map((s) => {
                     const isOOSGlobal = s.endsWith(":OOS");
                     const displaySize = isOOSGlobal ? s.replace(":OOS", "") : s;
-                    const isOOSVariant = activeVariant?.disabledSizes?.includes(displaySize) || false;
+                    
+                    let isOOSVariant = activeVariant?.disabledSizes?.includes(displaySize) || false;
+                    if (activeVariant?.quantities && activeVariant.quantities[displaySize] !== undefined) {
+                      if (activeVariant.quantities[displaySize] <= 0) {
+                        isOOSVariant = true;
+                      }
+                    }
+
                     const isOOS = isOOSGlobal || isOOSVariant;
                     return (
                       <button
@@ -336,12 +364,19 @@ export default function ProductClient({ product, relatedProducts }: Props) {
                 </button>
                 <span className="font-display text-base font-semibold text-white">{qty}</span>
                 <button
-                  onClick={() => setQty((q) => q + 1)}
-                  className="flex h-full w-10 items-center justify-center text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+                  onClick={() => setQty((q) => Math.min(remainingQty, q + 1))}
+                  disabled={!size || qty >= remainingQty}
+                  className="flex h-full w-10 items-center justify-center text-white/60 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <Plus size={16} />
                 </button>
               </div>
+              {size && remainingQty < Infinity && remainingQty > 0 && (
+                <span className="text-xs text-amber-400 font-body">باقي {remainingQty} فقط في المخزون!</span>
+              )}
+              {size && remainingQty === 0 && (
+                <span className="text-xs text-red-400 font-body">الكمية المطلوبة غير متوفرة!</span>
+              )}
             </div>
           </motion.div>
 
@@ -415,18 +450,20 @@ export default function ProductClient({ product, relatedProducts }: Props) {
           >
             <button
               onClick={handleAddToCart}
-              disabled={!size || !activeVariant}
+              disabled={!size || !activeVariant || remainingQty <= 0}
               className="w-full h-14 border border-white bg-transparent font-display text-sm font-bold uppercase tracking-[0.2em] text-white transition-all hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:border-white/20 disabled:text-white/30 disabled:hover:bg-transparent"
             >
               {size && activeVariant
-                ? activeOffer
+                ? remainingQty <= 0
+                  ? "الكمية المطلوبة غير متوفرة"
+                  : activeOffer
                   ? t('addToCartOffer', { qty: activeOffer.quantity, price: activeOffer.price.toLocaleString() })
                   : t('addToCartBtn')
                 : t('selectSizeRequired')}
             </button>
             <button
               onClick={handleBuyNow}
-              disabled={!size || !activeVariant}
+              disabled={!size || !activeVariant || remainingQty <= 0}
               className="w-full h-14 bg-white font-display text-sm font-bold uppercase tracking-[0.2em] text-black transition-all hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/20 disabled:text-white/50"
             >
               {t('buyNow')}

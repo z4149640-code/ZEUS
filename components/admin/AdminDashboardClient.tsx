@@ -76,12 +76,23 @@ export default function AdminDashboardClient() {
           throw new Error(`مطلوب صورة واحدة على الأقل للون "${variant.colorName}"`);
         }
 
+        // Process quantities
+        const validQuantities: Record<string, number> = {};
+        if (variant.quantities) {
+          for (const [size, qty] of Object.entries(variant.quantities as Record<string, any>)) {
+            if (typeof qty === "number" && !isNaN(qty)) {
+              validQuantities[size] = qty;
+            }
+          }
+        }
+
         finalVariants.push({
           colorName: variant.colorName,
           colorName_en: (variant as any).colorName_en || "",
           colorHex: variant.colorHex,
           images,
           disabledSizes: (variant as any).disabledSizes || [],
+          quantities: validQuantities,
         });
       }
 

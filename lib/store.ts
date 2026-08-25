@@ -96,7 +96,12 @@ export const useCartStore = create<CartStore>()(
         const existing = items.find(
           (i) => i.product.id === product.id && i.size === size && i.color === color
         );
+
+        const variant = product.variants.find(v => v.colorName === color);
+        const maxQty = variant?.quantities?.[size] !== undefined ? variant.quantities[size] : Infinity;
+
         if (existing) {
+          if (existing.quantity >= maxQty) return;
           set({
             items: items.map((i) =>
               i.product.id === product.id && i.size === size && i.color === color
@@ -105,6 +110,7 @@ export const useCartStore = create<CartStore>()(
             ),
           });
         } else {
+          if (maxQty <= 0) return;
           set({ items: [...items, { product, size, color, quantity: 1 }] });
         }
       },
@@ -121,13 +127,25 @@ export const useCartStore = create<CartStore>()(
           get().removeItem(productId, size, color);
           return;
         }
-        set({
-          items: get().items.map((i) =>
-            i.product.id === productId && i.size === size && i.color === color
-              ? { ...i, quantity }
-              : i
-          ),
-        });
+
+        const items = get().items;
+        const existing = items.find(
+          (i) => i.product.id === productId && i.size === size && i.color === color
+        );
+
+        if (existing) {
+          const variant = existing.product.variants.find(v => v.colorName === color);
+          const maxQty = variant?.quantities?.[size] !== undefined ? variant.quantities[size] : Infinity;
+          const finalQty = Math.min(quantity, maxQty);
+
+          set({
+            items: items.map((i) =>
+              i.product.id === productId && i.size === size && i.color === color
+                ? { ...i, quantity: finalQty }
+                : i
+            ),
+          });
+        }
       },
 
       clearCart: () => set({ items: [] }),
