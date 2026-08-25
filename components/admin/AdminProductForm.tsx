@@ -14,6 +14,7 @@ const variantSchema = z.object({
   colorHex: z.string().min(4, "مطلوب"),
   images: z.array(z.string()).default([]),   // existing saved URLs
   imageFiles: z.any().optional(),            // newly selected FileList
+  disabledSizes: z.array(z.string()).default([]),
 });
 
 const offerSchema = z.object({
@@ -53,7 +54,7 @@ type Props = {
   onCancelEdit?: () => void;
 };
 
-const defaultVariant = { colorName: "", colorName_en: "", colorHex: "#ffffff", images: [], imageFiles: null };
+const defaultVariant = { colorName: "", colorName_en: "", colorHex: "#ffffff", images: [], imageFiles: null, disabledSizes: [] };
 const defaultValues: ProductFormData = {
   title: "",
   title_en: "",
@@ -91,6 +92,7 @@ export default function AdminProductForm({
       colorHex: v.colorHex,
       images: v.images || [],
       imageFiles: null,
+      disabledSizes: v.disabledSizes || [],
     })),
     offers: initialData.offers || [],
     size_chart_url: initialData.size_chart_url || "",
@@ -330,7 +332,7 @@ export default function AdminProductForm({
           <div className="flex flex-col-reverse sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-4">
             <button
               type="button"
-              onClick={() => appendVariant({ colorName: "", colorHex: "#ffffff", images: [], imageFiles: null })}
+              onClick={() => appendVariant({ colorName: "", colorHex: "#ffffff", images: [], imageFiles: null, disabledSizes: [] })}
               className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-3 sm:py-2 rounded-sm text-xs font-bold uppercase tracking-widest text-white transition-all border border-white/10 w-full sm:w-auto"
             >
               <Plus size={16} /> إضافة لون آخر
@@ -444,6 +446,53 @@ export default function AdminProductForm({
                       <p className="text-white/20 text-[10px] text-right">
                         اختر عدة صور دفعة واحدة (الرئيسية، الخلف، تفاصيل...)
                       </p>
+                    </div>
+
+                    {/* Disabled Sizes for this variant */}
+                    <div className="lg:col-span-12 flex flex-col gap-3 mt-2 pt-4 border-t border-white/5">
+                      <label className="text-[11px] text-white/40 uppercase tracking-widest font-bold">
+                        المقاسات غير المتاحة لهذا اللون
+                      </label>
+                      {sizes.length === 0 ? (
+                        <span className="text-white/20 text-xs">أضف مقاسات للمنتج أولاً من الأعلى.</span>
+                      ) : (
+                        <div className="flex flex-wrap gap-2 justify-end">
+                          {sizes.map((s) => {
+                            const sizeName = s.replace(":OOS", "");
+                            const currentDisabledSizes = watch(`variants.${index}.disabledSizes`) || [];
+                            const isDisabled = currentDisabledSizes.includes(sizeName);
+
+                            return (
+                              <button
+                                key={sizeName}
+                                type="button"
+                                onClick={() => {
+                                  if (isDisabled) {
+                                    setValue(
+                                      `variants.${index}.disabledSizes`,
+                                      currentDisabledSizes.filter((ds) => ds !== sizeName),
+                                      { shouldValidate: true }
+                                    );
+                                  } else {
+                                    setValue(
+                                      `variants.${index}.disabledSizes`,
+                                      [...currentDisabledSizes, sizeName],
+                                      { shouldValidate: true }
+                                    );
+                                  }
+                                }}
+                                className={`px-3 py-1.5 text-xs font-display uppercase tracking-widest rounded-sm border transition-colors ${
+                                  isDisabled
+                                    ? "bg-red-500/20 text-red-300 border-red-500/30"
+                                    : "bg-white/5 text-white/50 border-white/10 hover:bg-white/10 hover:text-white/80"
+                                }`}
+                              >
+                                {sizeName} {isDisabled && <span className="mr-1 text-[9px]">(غير متاح)</span>}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

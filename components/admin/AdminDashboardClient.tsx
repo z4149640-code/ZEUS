@@ -81,6 +81,7 @@ export default function AdminDashboardClient() {
           colorName_en: (variant as any).colorName_en || "",
           colorHex: variant.colorHex,
           images,
+          disabledSizes: (variant as any).disabledSizes || [],
         });
       }
 

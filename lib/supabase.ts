@@ -11,6 +11,7 @@ export type ProductVariant = {
   colorName_en?: string;
   colorHex: string;
   images: string[];
+  disabledSizes?: string[];
 };
 
 // A volume/bundle discount tier (e.g., Buy 2 for 700 EGP)

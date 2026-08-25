@@ -37,9 +37,14 @@ export default function ProductClient({ product, relatedProducts }: Props) {
   const currentImageUrl = currentImages[activeImageIndex] || null;
 
   // Reset the image index whenever the user switches color
+  // and reset size if the currently selected size is OOS for the new color
   useEffect(() => {
     setActiveImageIndex(0);
-  }, [activeVariantIndex]);
+    const newVariant = product.variants?.[activeVariantIndex];
+    if (size && newVariant?.disabledSizes?.includes(size)) {
+      setSize(null);
+    }
+  }, [activeVariantIndex, product.variants, size]);
 
   // Best offer that applies at the current quantity
   const activeOffer = getBestOffer(product.offers, qty);
@@ -279,8 +284,10 @@ export default function ProductClient({ product, relatedProducts }: Props) {
 
                 <div className="flex flex-wrap gap-3">
                   {product.sizes.map((s) => {
-                    const isOOS = s.endsWith(":OOS");
-                    const displaySize = isOOS ? s.replace(":OOS", "") : s;
+                    const isOOSGlobal = s.endsWith(":OOS");
+                    const displaySize = isOOSGlobal ? s.replace(":OOS", "") : s;
+                    const isOOSVariant = activeVariant?.disabledSizes?.includes(displaySize) || false;
+                    const isOOS = isOOSGlobal || isOOSVariant;
                     return (
                       <button
                         key={s}
